@@ -75,51 +75,58 @@ module.exports = {
             } else {
               switch (version) {
                 case "1":
-                  if (!data.pool) {
-                    data.pool.lastBlockFound = 0;
-                    data.pool.soloMiners = 0;
-                    data.pool.hashrate = 0;
-                  }
-
-                  poolData.push({
-                    'info': {
-                      'host': host,
-                      'name': name
-                    },
-                    'network': {
-                      'height': data.network ? (data.network.height || 0) : 0,
-                    },
-                    'pool': {
-                      'lastBlockFound': parseInt(data.pool.lastBlockFound || 0),
-                      'hashrate': data.pool.soloHashrate ? (data.pool.soloHashrate + (data.pool.hashrate || 0)) : (data.pool.hashrate || 0),
-                      'miners': data.pool.soloMiners ? (data.pool.soloMiners + (data.pool.miners || 0)) : (data.pool.miners || 0)
-                    },
-                    'config': {
-                      'minPaymentThreshold': data.config.minPaymentThreshold || 0,
-                      'poolFee': data.config.fee || 0
+                  try {
+                    if (!data.pool) {
+                      data.pool = {};
                     }
-                  });
-                  checkForQueryFinished();
+
+                    poolData.push({
+                      'info': {
+                        'host': host,
+                        'name': name
+                      },
+                      'network': {
+                        'height': data.network ? (data.network.height || 0) : 0,
+                      },
+                      'pool': {
+                        'lastBlockFound': parseInt(data.pool.lastBlockFound || 0),
+                        'hashrate': data.pool.soloHashrate ? (data.pool.soloHashrate + (data.pool.hashrate || 0)) : (data.pool.hashrate || 0),
+                        'miners': data.pool.soloMiners ? (data.pool.soloMiners + (data.pool.miners || 0)) : (data.pool.miners || 0)
+                      },
+                      'config': {
+                        'minPaymentThreshold': data.config ? data.config.minPaymentThreshold || 0 : 0,
+                        'poolFee': data.config ? data.config.fee || 0 : 0
+                      }
+                    });
+                    checkForQueryFinished();
+                  } catch (err) {
+                    console.log(`Error trying to parse pool info: ${err}`);
+                    checkForQueryFinished();
+                  }
                   break;
                 case "2":
-                  dataObject = {
-                    'info': {
-                      'host': host,
-                      'name': name
-                    },
-                    'network': {
-                      'height': '',
-                    },
-                    'pool': {
-                      'lastBlockFound': data.pool_statistics ? parseInt(data.pool_statistics.lastBlockFoundTime || 0) * 1000 : 0,
-                      'hashrate': data.pool_statistics ? data.pool_statistics.hashRate || 0 : 0,
-                      'miners': data.pool_statistics ? data.pool_statistics.miners || 0 : 0
-                    },
-                    'config': {
-                      'minPaymentThreshold': '',
-                      'poolFee': ''
-                    }
-                  };
+                  try {
+                    dataObject = {
+                      'info': {
+                        'host': host,
+                        'name': name
+                      },
+                      'network': {
+                        'height': '',
+                      },
+                      'pool': {
+                        'lastBlockFound': data.pool_statistics ? parseInt(data.pool_statistics.lastBlockFoundTime || 0) * 1000 : 0,
+                        'hashrate': data.pool_statistics ? data.pool_statistics.hashRate || 0 : 0,
+                        'miners': data.pool_statistics ? data.pool_statistics.miners || 0 : 0
+                      },
+                      'config': {
+                        'minPaymentThreshold': '',
+                        'poolFee': ''
+                      }
+                    };
+                  } catch (err) {
+                    console.log(`Error trying to parse pool info: ${err}`);
+                  }
 
                   request.get({
                     url: url + '/network/stats',
@@ -149,36 +156,46 @@ module.exports = {
                           console.log(statsUrl + ' -> Status:', res.statusCode);
                           checkForQueryFinished();
                         } else {
-                          dataObject.config.minPaymentThreshold = config.min_wallet_payout || 0;
-                          dataObject.config.poolFee = config.pplns_fee || 0;
+                          try {
+                            dataObject.config.minPaymentThreshold = config.min_wallet_payout || 0;
+                            dataObject.config.poolFee = config.pplns_fee || 0;
 
-                          poolData.push(dataObject);
-                          checkForQueryFinished();
+                            poolData.push(dataObject);
+                            checkForQueryFinished();
+                          } catch (err) {
+                            console.log(`Error trying to parse pool info: ${err}`);
+                            checkForQueryFinished();
+                          }
                         }
                       });
                     }
                   });
                   break;
                 case "3":
-                  poolData.push({
-                    'info': {
-                      'host': host,
-                      'name': name
-                    },
-                    'network': {
-                      'height': data.network_statistics.height || 0,
-                    },
-                    'pool': {
-                      'lastBlockFound': parseInt(data.pool_statistics.lastBlockFoundTime || 0) * 1000,
-                      'hashrate': data.pool_statistics.hashRate || 0,
-                      'miners': data.pool_statistics.miners || 0
-                    },
-                    'config': {
-                      'minPaymentThreshold': data.config.min_wallet_payout || 0,
-                      'poolFee': data.config.pplns_fee || 0
-                    }
-                  });
-                  checkForQueryFinished();
+                  try {
+                    poolData.push({
+                      'info': {
+                        'host': host,
+                        'name': name
+                      },
+                      'network': {
+                        'height': data.network_statistics.height || 0,
+                      },
+                      'pool': {
+                        'lastBlockFound': parseInt(data.pool_statistics.lastBlockFoundTime || 0) * 1000,
+                        'hashrate': data.pool_statistics.hashRate || 0,
+                        'miners': data.pool_statistics.miners || 0
+                      },
+                      'config': {
+                        'minPaymentThreshold': data.config.min_wallet_payout || 0,
+                        'poolFee': data.config.pplns_fee || 0
+                      }
+                    });
+                    checkForQueryFinished();
+                  } catch (err) {
+                    console.log(`Error trying to parse pool info: ${err}`);
+                    checkForQueryFinished();
+                  }
                   break;
                 default:
                   throw "wrong version";
