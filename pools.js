@@ -75,6 +75,12 @@ module.exports = {
             } else {
               switch (version) {
                 case "1":
+                  if (!data.pool) {
+                    data.pool.lastBlockFound = 0;
+                    data.pool.soloMiners = 0;
+                    data.pool.hashrate = 0;
+                  }
+
                   poolData.push({
                     'info': {
                       'host': host,
@@ -105,9 +111,9 @@ module.exports = {
                       'height': '',
                     },
                     'pool': {
-                      'lastBlockFound': parseInt(data.pool_statistics.lastBlockFoundTime || 0) * 1000,
-                      'hashrate': data.pool_statistics.hashRate || 0,
-                      'miners': data.pool_statistics.miners || 0
+                      'lastBlockFound': data.pool_statistics ? parseInt(data.pool_statistics.lastBlockFoundTime || 0) * 1000 : 0,
+                      'hashrate': data.pool_statistics ? data.pool_statistics.hashRate || 0 : 0,
+                      'miners': data.pool_statistics ? data.pool_statistics.miners || 0 : 0
                     },
                     'config': {
                       'minPaymentThreshold': '',
