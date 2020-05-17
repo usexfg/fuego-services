@@ -33,7 +33,7 @@ function getCustomChart(options, chartData, resultCallback) {
       dataPoints.push(value[1]);
     });
 
-    for (i = dataLength - 1; i >= 0; i--) {
+    for (let i = dataLength - 1; i >= 0; i--) {
       timeLabels.push(moment().subtract(durationAsMS * (i + 1), 'ms').format(options.dateFormat));
     }
 

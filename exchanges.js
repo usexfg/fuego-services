@@ -21,7 +21,7 @@ function checkIfMatches(parameter, value, partial) {
       matches = false;
     }
   } else {
-    if (!value || !(value.toUpperCase() == parameter.toUpperCase())) {
+    if (!value || (value.toUpperCase() !== parameter.toUpperCase())) {
       matches = false;
     }
   }

@@ -106,7 +106,7 @@ module.exports = {
                   break;
                 case "2":
                   try {
-                    dataObject = {
+                    var dataObject = {
                       'info': {
                         'host': host,
                         'name': name
