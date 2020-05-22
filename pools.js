@@ -32,11 +32,10 @@ module.exports = {
         var counter = 0;
 
         shuffle(JSON.parse(data).ccx).forEach(function (element, index, array) {
-          var url = element[1];
           var host = element[0];
+          var urls = element[1];
           var name = element[2];
           var version = element[3];
-          var statsUrl = null;
 
           function checkForQueryFinished() {
             counter++;
@@ -45,32 +44,18 @@ module.exports = {
             }
           }
 
-          switch (version) {
-            case "1":
-              statsUrl = url + '/stats';
-              break;
-            case "2":
-              statsUrl = url + '/pool/stats';
-              break;
-            case "3":
-              statsUrl = url + '/stats';
-              break;
-            default:
-              console.log("wrong version: " + version);
-          }
-
           request.get({
-            url: statsUrl,
+            url: urls[0],
             json: true,
             timeout: 2000,
             rejectUnauthorized: false,
             headers: { 'User-Agent': 'Conceal Services' }
           }, (err, res, data) => {
             if (err) {
-              console.log(statsUrl + ' -> Status:', err.message);
+              console.log(urls[0] + ' -> Status:', err.message);
               checkForQueryFinished();
             } else if (res.statusCode !== 200) {
-              console.log(statsUrl + ' -> Status:', res.statusCode);
+              console.log(urls[0] + ' -> Status:', res.statusCode);
               checkForQueryFinished();
             } else {
               switch (version) {
@@ -129,31 +114,31 @@ module.exports = {
                   }
 
                   request.get({
-                    url: url + '/network/stats',
+                    url: urls[1],
                     json: true,
                     timeout: 2000,
                     headers: { 'User-Agent': 'Conceal Services' }
                   }, (err, res, network) => {
                     if (err) {
-                      console.log(statsUrl + ' -> Status:', err.message);
+                      console.log(urls[1] + ' -> Status:', err.message);
                       checkForQueryFinished();
                     } else if (res.statusCode !== 200) {
-                      console.log(statsUrl + ' -> Status:', res.statusCode);
+                      console.log(urls[1] + ' -> Status:', res.statusCode);
                       checkForQueryFinished();
                     } else {
                       dataObject.network.height = network.height || 0;
 
                       request.get({
-                        url: url + '/config',
+                        url: urls[2],
                         json: true,
                         timeout: 2000,
                         headers: { 'User-Agent': 'Conceal Services' }
                       }, (err, res, config) => {
                         if (err) {
-                          console.log(statsUrl + ' -> Status:', err.message);
+                          console.log(urls[2] + ' -> Status:', err.message);
                           checkForQueryFinished();
                         } else if (res.statusCode !== 200) {
-                          console.log(statsUrl + ' -> Status:', res.statusCode);
+                          console.log(urls[2] + ' -> Status:', res.statusCode);
                           checkForQueryFinished();
                         } else {
                           try {

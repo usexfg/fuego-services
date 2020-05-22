@@ -4,6 +4,7 @@ const exchanges = require("./exchanges.js");
 const vsprintf = require("sprintf-js").vsprintf;
 const express = require("express");
 const winston = require('winston');
+const expressWinston = require('express-winston');
 const config = require("./config.js").configOpts;
 const charts = require("./charts.js");
 const pools = require("./pools.js");
@@ -23,33 +24,6 @@ const logFormatter = (logEntry) => {
   return logEntry;
 };
 
-// winston loging facilities
-const logger = winston.createLogger({
-  exitOnError: false, // do not exit on handled exceptions
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: path.join(utils.ensureUserDataDir(), 'info.log'),
-      maxsize: 10000000,
-      maxFiles: 5
-    }),
-    new winston.transports.File({
-      filename: path.join(utils.ensureUserDataDir(), 'errors.log'),
-      maxsize: 10000000,
-      maxFiles: 5,
-      level: 'error'
-    })
-  ],
-  exceptionHandlers: [
-    new winston.transports.File({
-      filename: path.join(utils.ensureUserDataDir(), 'exceptions.log'),
-      maxsize: 10000000,
-      maxFiles: 5
-    })
-  ],
-  format: winston.format(logFormatter)()
-});
-
 // create all needed classes
 var nodesIntance = new nodes();
 
@@ -57,6 +31,26 @@ var app = express(); // create express app
 // use the json parser for body
 app.use(bodyParser.json());
 app.use(cors());
+
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.json()
+  )
+}));
+
+app.use(expressWinston.errorLogger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.json()
+  )
+}));
 
 // start listener
 app.listen(config.server.port, () => {
@@ -78,7 +72,7 @@ function getChartOptions(req) {
 
 // get request for the list of all active nodes
 app.get("/charts/7daysPrice.png", (req, res) => {
-  logger.info('call to /charts/7daysPrice.png was made', req);
+  console.log('call to /charts/7daysPrice.png was made', req);
   charts.getPriceChart(getChartOptions(req), function (image) {
     if (image) {
       res.writeHead(200, {
@@ -94,7 +88,7 @@ app.get("/charts/7daysPrice.png", (req, res) => {
 });
 
 app.get("/charts/price.png", (req, res) => {
-  logger.info('call to /charts/price.png was made', req.query);
+  console.log('call to /charts/price.png was made', req.query);
   charts.getPriceChart(getChartOptions(req), function (image) {
     if (image) {
       res.writeHead(200, {
@@ -110,7 +104,7 @@ app.get("/charts/price.png", (req, res) => {
 });
 
 app.get("/charts/volume.png", (req, res) => {
-  logger.info('call to /charts/volume.png was made', req.query);
+  console.log('call to /charts/volume.png was made', req.query);
   charts.getVolumeChart(getChartOptions(req), function (image) {
     if (image) {
       res.writeHead(200, {
@@ -126,7 +120,7 @@ app.get("/charts/volume.png", (req, res) => {
 });
 
 app.get("/charts/marketcap.png", (req, res) => {
-  logger.info('call to /charts/marketcap.png was made', req.query);
+  lconsole.log('call to /charts/marketcap.png was made', req.query);
   charts.getMarketcapChart(getChartOptions(req), function (image) {
     if (image) {
       res.writeHead(200, {
@@ -142,26 +136,26 @@ app.get("/charts/marketcap.png", (req, res) => {
 });
 
 app.get("/nodes/geodata", (req, res) => {
-  logger.info('call to /nodes/geodata was made', req.query);
+  console.log('call to /nodes/geodata was made', req.query);
   res.json(nodesIntance.getGeoData(null));
 });
 
 app.get("/pools/list", (req, res) => {
-  logger.info('call to /pools/list was made', req.query);
+  console.log('call to /pools/list was made', req.query);
   pools.getPoolList(function (data) {
     res.json(data);
   });
 });
 
 app.get("/pools/data", (req, res) => {
-  logger.info('call to /pools/data was made', req.query);
+  console.log('call to /pools/data was made', req.query);
   pools.getPoolData(function (data) {
     res.json(data);
   });
 });
 
 app.get("/exchanges/list", (req, res) => {
-  logger.info('call to /exchanges/list was made', req.query);
+  console.log('call to /exchanges/list was made', req.query);
   exchanges.getExchangesList(req, function (data) {
     res.json(data);
   });
@@ -180,7 +174,7 @@ app.get('/system/profile', async (req, res) => {
 // handle any application errors
 app.use(function (err, req, res, next) {
   if (err) {
-    logger.error('Error trying to execute request!', err.message);
+    console.error('Error trying to execute request!', err.message);
     res.status(500).send(vsprintf("Error executing the API: %s", [err.message]));
   }
 });

@@ -3,87 +3,69 @@
    "ccx":[
       [
          "pool.conceal.network",
-         "https://pool.conceal.network/api",
+         ["https://pool.conceal.network/api/stats"],
          "Official Pool",
          "1"
       ],
       [
          "ccx.scecf.org",
-         "https://ccx.scecf.org:21001",
+         ["https://ccx.scecf.org:21001/stats"],
          "SCECF",
          "1"
       ],
       [
          "ccx-us.bluerockpools.net",
-         "https://ccx-us.bluerockpools.net:8119",
+         ["https://ccx-us.bluerockpools.net:8119/stats"],
          "BlueRockPools",
          "1"
       ],
       [
          "conceal.herominers.com",
-         "https://conceal.herominers.com/api",
+         ["https://conceal.herominers.com/api/stats"],
          "Herominers",
          "1"
       ],
       [
-         "conceal.blockfoundry.org",
-         "https://conceal.blockfoundry.org/api",
-         "BlockFoundry",
-         "1"
-      ],
-      [
-         "conceal.luckypool.io",
-         "https://conceal.luckypool.io/api",
-         "Lucky Pool",
-         "1"
-      ],
-      [
          "conceal.hashvault.pro",
-         "https://api.hashvault.pro/v3/conceal",
+         ["https://api.hashvault.pro/v3/conceal"],
          "Hash Vault",
          "3"
       ],
       [
          "conceal.miner.rocks",
-         "https://conceal.miner.rocks/api",
+         ["https://conceal.miner.rocks/api/stats"],
          "Miner Rocks",
          "1"
       ],
       [
-         "mineccx.com",
-         "https://mineccx.com/api",
-         "MineCCX",
-         "1"
-      ],
-      [
          "fastpool.xyz/ccx",
-         "https://fastpool.xyz/api-ccx",
+         ["https://fastpool.xyz/api-ccx/stats"],
          "Fastpool",
          "1"
       ],
       [
          "miningpool.online/conceal",
-         "https://miningpool.online/conceal/api",
+         ["https://miningpool.online/conceal/api/stats"],
          "Miningpool",
          "1"
       ],
       [
-         "ccx.codpool.com",
-         "https://codpool.codms.com:8216",
-         "Codpool",
-         "1"
-      ],
-      [
-         "daxminer.com",
-         "https://daxminer.com/api-conceal",
-         "DAXMiner",
-         "1"
-      ],
-      [
          "pool.conceal.community",
-         "https://pool.conceal.community/api",
+         ["https://pool.conceal.community/api/pool/stats", "https://pool.conceal.community/api/network/stats", "https://pool.conceal.community/api/config"],
          "Community Pool",
          "2"
+      ],
+      [
+         "ccx.pool.gntl.co.uk",
+         ["https://ccx.pool.gntl.co.uk/api/pool/stats", "https://ccx.pool.gntl.co.uk/api/network/stats", "https://ccx.pool.gntl.co.uk/api/config"],
+         "Gntl Pool",
+         "2"
+      ],
+      [
+         "ccx.pool-moscow.ru",
+         ["http://ccx.pool-moscow.ru:25015/live_stats"],
+         "Pool Moscow",
+         "1"
       ]
    ]
 }
