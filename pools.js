@@ -182,9 +182,9 @@ module.exports = {
                         'height': data.network_statistics.height || 0,
                       },
                       'pool': {
-                        'lastBlockFound': parseInt(data.pool_statistics.lastBlockFoundTime || 0) * 1000,
-                        'hashrate': data.pool_statistics.hashRate || 0,
-                        'miners': data.pool_statistics.miners || 0
+                        'lastBlockFound': parseInt(data.pool_statistics.collective.lastFoundBlock.ts || 0) * 1000,
+                        'hashrate': data.pool_statistics.collective.hashRate || 0,
+                        'miners': data.pool_statistics.collective.miners || 0
                       },
                       'config': {
                         'minPaymentThreshold': data.config.min_wallet_payout || 0,

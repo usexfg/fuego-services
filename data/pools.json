@@ -39,7 +39,7 @@
       ],
       [
          "conceal.hashvault.pro",
-         "https://api.hashvault.pro/v2/conceal",
+         "https://api.hashvault.pro/v3/conceal",
          "Hash Vault",
          "3"
       ],
@@ -78,6 +78,12 @@
          "https://daxminer.com/api-conceal",
          "DAXMiner",
          "1"
+      ],
+      [
+         "pool.conceal.community",
+         "https://pool.conceal.community/api",
+         "Community Pool",
+         "2"
       ]
    ]
 }
