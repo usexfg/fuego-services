@@ -8,12 +8,6 @@
          "1"
       ],
       [
-         "ccx.scecf.org",
-         ["https://ccx.scecf.org:21001/stats"],
-         "SCECF",
-         "1"
-      ],
-      [
          "ccx-us.bluerockpools.net",
          ["https://ccx-us.bluerockpools.net:8119/stats"],
          "BlueRockPools",
