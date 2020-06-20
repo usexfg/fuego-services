@@ -1,3 +1,7 @@
+// Copyright (c) 2020, Taegus Cromis, The Conceal Developers
+//
+// Please see the included LICENSE file for more information.
+
 const request = require("request");
 const path = require("path");
 const fs = require('graceful-fs');
