@@ -114,3 +114,34 @@ exchanges/list?partial=false
 These are APIs that will give you nodes info
 
 * /nodes/geodata -> This gives you geodata for all known nodes.
+
+
+# Market API-s
+
+These are APIs that will give you market info for CCX
+
+* /market/info -> This gives you general info for the market.
+
+## Supported Parameters
+
+**vsCurrencies**: The currencies for which the info will be retreived.
+
+```
+market/info.png?vsCurrencies=usd,btc,eur
+```
+* /market/history -> This gives you history info for the market for last N days.
+
+## Supported Parameters
+
+**vsCurrency**: The currency for which the history will be shown
+
+```
+market/history.png?vsCurrency=usd
+```
+
+**days**: Timespan for which the history is retreived
+
+```
+market/history.png?days=30
+```
+
