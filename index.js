@@ -162,8 +162,15 @@ app.get("/exchanges/list", (req, res) => {
 });
 
 app.get("/market/info", (req, res) => {
-  console.log('call to /exchanges/list was made', req.query);
+  console.log('call to //market/info was made', req.query);
   market.getMarketInfo(req, function (data) {
+    res.json(data);
+  });
+});
+
+app.get("/market/history", (req, res) => {
+  console.log('call to /market/history was made', req.query);
+  market.getMarketHistory(req, function (data) {
     res.json(data);
   });
 });

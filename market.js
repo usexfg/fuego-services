@@ -22,5 +22,23 @@ module.exports = {
       if (err) throw err;
       else resultCallback(data);
     });
+  },
+  getMarketHistory: function (req, resultCallback) {
+    var queryParams = {
+      vs_currency: req.query.currency || 'USD',
+      days: req.query.days || 7
+    };
+
+    var packetData = {
+      uri: `https://api.coingecko.com/api/v3/coins/conceal/market_chart?${queryString.stringify(queryParams)}`,
+      strictSSL: false,
+      method: "GET",
+      json: true
+    };
+
+    request(packetData, function (err, res, data) {
+      if (err) throw err;
+      else resultCallback(data);
+    });
   }
 };
