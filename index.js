@@ -1,12 +1,12 @@
 const bodyParser = require("body-parser");
 const runProfiler = require('./profile.js')
 const exchanges = require("./exchanges.js");
-const vsprintf = require("sprintf-js").vsprintf;
 const express = require("express");
 const winston = require('winston');
 const expressWinston = require('express-winston');
 const config = require("./config.js").configOpts;
 const charts = require("./charts.js");
+const market = require("./market.js");
 const pools = require("./pools.js");
 const nodes = require("./nodes.js");
 const utils = require("./utils.js");
@@ -161,6 +161,13 @@ app.get("/exchanges/list", (req, res) => {
   });
 });
 
+app.get("/market/info", (req, res) => {
+  console.log('call to /exchanges/list was made', req.query);
+  market.getMarketInfo(req, function (data) {
+    res.json(data);
+  });
+});
+
 app.get('/system/profile', async (req, res) => {
   try {
     let profile = await runProfiler(req.query.duration ? parseInt(req.query.duration) : 30);
@@ -175,6 +182,6 @@ app.get('/system/profile', async (req, res) => {
 app.use(function (err, req, res, next) {
   if (err) {
     console.error('Error trying to execute request!', err.message);
-    res.status(500).send(vsprintf("Error executing the API: %s", [err.message]));
+    res.status(500).send(`Error executing the API: ${err.message}`);
   }
 });

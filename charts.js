@@ -1,6 +1,5 @@
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const queryString = require('query-string');
-const vsprintf = require("sprintf-js").vsprintf;
 const request = require("request");
 const smooth = require('array-smooth');
 const moment = require("moment");
@@ -12,7 +11,7 @@ function getCoinGeckoData(options, callback) {
   };
 
   var packetData = {
-    uri: vsprintf("https://api.coingecko.com/api/v3/coins/conceal/market_chart?%s", [queryString.stringify(queryParams)]),
+    uri: `https://api.coingecko.com/api/v3/coins/conceal/market_chart?${queryString.stringify(queryParams)}`,
     method: "GET",
     json: true
   };

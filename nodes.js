@@ -2,7 +2,6 @@ const config = require("./config.js").configOpts;
 const queryString = require('query-string');
 const schedule = require('node-schedule');
 const NodeCache = require("node-cache");
-const vsprintf = require("sprintf-js").vsprintf;
 const request = require("request");
 const moment = require("moment");
 const geoip = require('geoip-lite');
@@ -39,7 +38,7 @@ class nodes {
       } else {
         if (data.success) {
           data.list.forEach((value) => {
-            var address = vsprintf("http://%s:%s/getpeers", [value.nodeHost, value.nodePort]);
+            var address = `http://${value.nodeHost}:${value.nodePort}/getpeers`;
 
             if (this.addressList.indexOf(address) == -1) {
               this.addressList.push(address);
