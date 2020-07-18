@@ -127,7 +127,7 @@ These are APIs that will give you market info for CCX
 **vsCurrencies**: The currencies for which the info will be retreived.
 
 ```
-market/info.png?vsCurrencies=usd,btc,eur
+market/info?vsCurrencies=usd,btc,eur
 ```
 * /market/history -> This gives you history info for the market for last N days.
 
@@ -136,12 +136,12 @@ market/info.png?vsCurrencies=usd,btc,eur
 **vsCurrency**: The currency for which the history will be shown
 
 ```
-market/history.png?vsCurrency=usd
+market/history?vsCurrency=usd
 ```
 
 **days**: Timespan for which the history is retreived
 
 ```
-market/history.png?days=30
+market/history?days=30
 ```
 
