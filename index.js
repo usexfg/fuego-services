@@ -57,6 +57,11 @@ app.listen(config.server.port, () => {
   console.log("Server running on port " + config.server.port);
 });
 
+function reportError(message, res) {
+  console.error('Error trying to execute request!', message);
+  res.status(500).send(`Error executing the API: ${message}`);
+}
+
 function getChartOptions(req) {
   return {
     dateFormat: req.query.dateFormat || 'YYYY-MM-DD',
@@ -142,15 +147,23 @@ app.get("/nodes/geodata", (req, res) => {
 
 app.get("/pools/list", (req, res) => {
   console.log('call to /pools/list was made', req.query);
-  pools.getPoolList(function (data) {
-    res.json(data);
+  pools.getPoolList(function (response) {
+    if (response.success) {
+      res.json(response.data);
+    } else {
+      reportError(response.err.message, res);
+    }
   });
 });
 
 app.get("/pools/data", (req, res) => {
   console.log('call to /pools/data was made', req.query);
-  pools.getPoolData(function (data) {
-    res.json(data);
+  pools.getPoolData(function (response) {
+    if (response.success) {
+      res.json(response.data);
+    } else {
+      reportError(response.err.message, res);
+    }
   });
 });
 
@@ -188,7 +201,6 @@ app.get('/system/profile', async (req, res) => {
 // handle any application errors
 app.use(function (err, req, res, next) {
   if (err) {
-    console.error('Error trying to execute request!', err.message);
-    res.status(500).send(`Error executing the API: ${err.message}`);
+    reportError(err.message, res);
   }
 });

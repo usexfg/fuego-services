@@ -21,16 +21,16 @@ module.exports = {
   getPoolList: function (resultCallback) {
     fs.readFile(path.join(path.dirname(require.main.filename), 'data', 'pools.json'), 'utf8', function (err, data) {
       if (err) {
-        throw err;
+        resultCallback({success: false, error: err});
       } else {
-        resultCallback(shuffle(JSON.parse(data).ccx));
+        resultCallback({success: false, data: shuffle(JSON.parse(data).ccx)});
       }
     });
   },
   getPoolData: function (resultCallback) {
     fs.readFile(path.join(path.dirname(require.main.filename), 'data', 'pools.json'), 'utf8', function (err, data) {
       if (err) {
-        throw err;
+        resultCallback({success: false, error: err});
       } else {
         var poolData = [];
         var counter = 0;
@@ -44,7 +44,7 @@ module.exports = {
           function checkForQueryFinished() {
             counter++;
             if (counter === array.length) {
-              resultCallback(poolData);
+              resultCallback({success: false, data: poolData});
             }
           }
 
@@ -187,7 +187,7 @@ module.exports = {
                   }
                   break;
                 default:
-                  throw "wrong version";
+                  resultCallback({success: false, error: { message: "wrong version" }});
               }
             }
           });
