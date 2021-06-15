@@ -20,7 +20,7 @@ module.exports = {
 
     request(packetData, function (err, res, data) {
       if (err) throw err;
-      else resultCallback(data);
+      else resultCallback({success: true, data: data});
     });
   },
   getMarketHistory: function (req, resultCallback) {
@@ -38,7 +38,7 @@ module.exports = {
 
     request(packetData, function (err, res, data) {
       if (err) throw err;
-      else resultCallback(data);
+      else resultCallback({success: true, data: data});
     });
   }
 };

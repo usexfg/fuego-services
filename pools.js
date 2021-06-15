@@ -23,7 +23,7 @@ module.exports = {
       if (err) {
         resultCallback({success: false, error: err});
       } else {
-        resultCallback({success: false, data: shuffle(JSON.parse(data).ccx)});
+        resultCallback({success: true, data: shuffle(JSON.parse(data).ccx)});
       }
     });
   },
@@ -44,7 +44,7 @@ module.exports = {
           function checkForQueryFinished() {
             counter++;
             if (counter === array.length) {
-              resultCallback({success: false, data: poolData});
+              resultCallback({success: true, data: poolData});
             }
           }
 

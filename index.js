@@ -169,22 +169,34 @@ app.get("/pools/data", (req, res) => {
 
 app.get("/exchanges/list", (req, res) => {
   console.log('call to /exchanges/list was made', req.query);
-  exchanges.getExchangesList(req, function (data) {
-    res.json(data);
+  exchanges.getExchangesList(req, function (response) {
+    if (response.success) {
+      res.json(response.data);
+    } else {
+      reportError(response.err.message, res);
+    }
   });
 });
 
 app.get("/market/info", (req, res) => {
   console.log('call to //market/info was made', req.query);
-  market.getMarketInfo(req, function (data) {
-    res.json(data);
+  market.getMarketInfo(req, function (response) {
+    if (response.success) {
+      res.json(response.data);
+    } else {
+      reportError(response.err.message, res);
+    }
   });
 });
 
 app.get("/market/history", (req, res) => {
   console.log('call to /market/history was made', req.query);
-  market.getMarketHistory(req, function (data) {
-    res.json(data);
+  market.getMarketHistory(req, function (response) {
+    if (response.success) {
+      res.json(response.data);
+    } else {
+      reportError(response.err.message, res);
+    }
   });
 });
 

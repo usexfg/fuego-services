@@ -22,12 +22,13 @@ module.exports = {
   getExchangesList: function (req, resultCallback) {
     fs.readFile(path.join(path.dirname(require.main.filename), 'data', 'exchanges.json'), 'utf8', function (err, data) {
       if (err) {
-        throw err;
+        resultCallback({success: false, error: err});
       } else {
         let partial = req.query.partial ? req.query.partial.toUpperCase() == "TRUE" : false
 
-        resultCallback(
-          JSON.parse(data).exchanges.filter(function (exchange) {
+        resultCallback({
+          success: false, 
+          data: JSON.parse(data).exchanges.filter(function (exchange) {
             if (req.query.name) {
               if (!checkIfMatches(req.query.name, exchange.name, partial)) {
                 return false;
@@ -48,7 +49,7 @@ module.exports = {
 
             return true;
           })
-        );
+        });
       }
     });
   }
