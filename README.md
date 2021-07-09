@@ -1,13 +1,10 @@
-# Conceal Services 
-Conceal services offered through a simple API. 
-
 # Chart API-s
 
 Currently there are 3 chart API calls supported that return PNG images as result. The calls have the following endpoints:
 
-* /charts/price.png -> Price history for the Conceal coin
-* /charts/volume.png -> Volume history for the Conceal coin
-* /charts/marketcap.png -> Marketcap history for the Conceal coin
+* /charts/price.png -> Price history for Fango coin
+* /charts/volume.png -> Volume history for Fango coin
+* /charts/marketcap.png -> Marketcap history for Fango coin
 
 The type chart you get back depends on the parameters you pass in the URL.
 
@@ -64,8 +61,8 @@ charts/price.png?dateFormat=YYYY-MM-DD
 
 These are APIs that will give you pools info
 
-* /pools/list -> This gives you a shuffled list of all CCX pools 
-* /pools/data -> This gives you a shuffled list of all CCX pools data
+* /pools/list -> This gives you a shuffled list of all XFG pools 
+* /pools/data -> This gives you a shuffled list of all XFG pools data
 
 # Exchange API-s
 
@@ -118,7 +115,7 @@ These are APIs that will give you nodes info
 
 # Market API-s
 
-These are APIs that will give you market info for CCX
+These are APIs that will give you market info for XFG
 
 * /market/info -> This gives you general info for the market.
 
