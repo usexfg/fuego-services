@@ -30,7 +30,7 @@ module.exports = {
     };
 
     var packetData = {
-      uri: `https://api.coingecko.com/api/v3/coins/conceal/market_chart?${queryString.stringify(queryParams)}`,
+      uri: `https://api.coingecko.com/api/v3/coins/fango/market_chart?${queryString.stringify(queryParams)}`,
       strictSSL: false,
       method: "GET",
       json: true
