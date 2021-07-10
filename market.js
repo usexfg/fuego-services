@@ -4,7 +4,7 @@ const request = require("request");
 module.exports = {
   getMarketInfo: function (req, resultCallback) {
     var queryParams = {
-      ids: 'Conceal',
+      ids: 'Fango',
       vs_currencies: req.query.vsCurrencies || 'USD',
       include_market_cap: true,
       include_24hr_vol: true,
