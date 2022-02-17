@@ -1,4 +1,4 @@
-// Copyright (c) 2020, Taegus Cromis, The Conceal Developers
+// Copyright (c) 2020-2022, Taegus Cromis, The Conceal Developers
 //
 // Please see the included LICENSE file for more information.
 
