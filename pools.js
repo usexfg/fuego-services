@@ -121,6 +121,7 @@ module.exports = {
                     url: urls[1],
                     json: true,
                     timeout: 2000,
+                    rejectUnauthorized: true,
                     headers: { 'User-Agent': 'Conceal Services' }
                   }, (err, res, network) => {
                     if (err) {
@@ -136,6 +137,7 @@ module.exports = {
                         url: urls[2],
                         json: true,
                         timeout: 2000,
+                        rejectUnauthorized: true,
                         headers: { 'User-Agent': 'Conceal Services' }
                       }, (err, res, config) => {
                         if (err) {
