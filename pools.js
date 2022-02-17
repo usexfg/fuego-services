@@ -52,7 +52,7 @@ module.exports = {
             url: urls[0],
             json: true,
             timeout: 2000,
-            rejectUnauthorized: false,
+            rejectUnauthorized: true,
             headers: { 'User-Agent': 'Conceal Services' }
           }, (err, res, data) => {
             if (err) {
