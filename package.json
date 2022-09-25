@@ -17,7 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-winston": "^4.2.0",
-    "geoip-lite": "^1.4.3",
+    "geoip-lite": "^1.4.6",
     "graceful-fs": "^4.2.9",
     "moment": "^2.29.4",
     "node-cache": "^4.2.1",
