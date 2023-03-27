@@ -1,6 +1,6 @@
-const commandLineArgs = require("command-line-args");
-const path = require("path");
-const fs = require('graceful-fs');
+import commandLineArgs from "command-line-args";
+import path from "path";
+import fs from "graceful-fs";
 
 
 const cmdOptions = commandLineArgs([{
@@ -9,4 +9,4 @@ const cmdOptions = commandLineArgs([{
   type: String
 }]);
 
-exports.configOpts = JSON.parse(fs.readFileSync(cmdOptions.config || path.join(process.cwd(), "config.json"), "utf8"));
+export default JSON.parse(fs.readFileSync(cmdOptions.config || path.join(process.cwd(), "config.json"), "utf8"));

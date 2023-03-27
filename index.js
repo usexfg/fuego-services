@@ -1,18 +1,18 @@
-const bodyParser = require("body-parser");
-const runProfiler = require('./profile.js')
-const exchanges = require("./exchanges.js");
-const express = require("express");
-const winston = require('winston');
-const expressWinston = require('express-winston');
-const config = require("./config.js").configOpts;
-const charts = require("./charts.js");
-const market = require("./market.js");
-const pools = require("./pools.js");
-const nodes = require("./nodes.js");
-const utils = require("./utils.js");
-const cors = require("cors");
-const path = require("path");
-const fs = require('graceful-fs');
+import bodyParser from "body-parser";
+import expressWinston from "express-winston";
+import * as runProfiler from "./profile.js";
+import * as exchanges from "./exchanges.js";
+import * as charts from "./charts.js";
+import * as market from "./market.js";
+import * as pools from "./pools.js";
+import { nodes } from "./nodes.js";
+import * as utils from "./utils.js";
+import express from "express";
+import winston from "winston";
+import config from "./config.js";
+import cors from "cors";
+import path from "path";
+import fs from "graceful-fs";
 
 // message base for winston logging
 const MESSAGE = Symbol.for('message');
