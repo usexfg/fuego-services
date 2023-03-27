@@ -14,7 +14,7 @@ export class nodes {
     ];
 
     this.request = axios.create({
-      timeout: 10000, // 2 seconds
+      timeout: 60000, // 2 seconds
       headers:{
         'User-Agent': 'Conceal Services'
       }
@@ -32,6 +32,19 @@ export class nodes {
     this.geoJSONArray = [];
     var counter = 0;
 
+    const checkForProcessingEnd = () => {
+      counter++;
+
+      // check if we have processed all nodes
+      if (counter >= this.addressList.length) {
+        let nodeKeys = this.nodeCache.keys();
+
+        for (let i = 0; i < nodeKeys.length; i++) {
+          this.geoJSONArray.push(this.nodeCache.get(nodeKeys[i]));
+        }
+      }
+    }
+
     this.request.get("https://explorer.conceal.network/pool/list?isReachable=true").then(response => {
       let data = response.data;
 
@@ -46,20 +59,10 @@ export class nodes {
 
         // now loop all the addressed from the list
         this.addressList.forEach((value) => {
-          request.get({
-            url: value,
-            json: true,
-            headers: { 'User-Agent': 'Conceal Services' }
-          }, (err, res, data) => {
-            if (err) {
-              console.log('Error:', err.message);
-              counter++;
-            } else if (res.statusCode !== 200) {
-              console.log('Status:', res.statusCode);
-              counter++;
-            } else {
-              counter++;
+          this.request.get(value).then(response => {
+            let data = response.data;
 
+            try {
               data.peers.forEach((value) => {
                 var ipAddress = value.substr(0, value.indexOf(':'));
 
@@ -72,18 +75,14 @@ export class nodes {
                 // set the node data under the IP key and set its expiration time
                 this.nodeCache.set(ipAddress, nodeData, config.nodes.cache.expire);
               });
-            }
-
-            // check if we have processed all nodes
-            if (counter >= this.addressList.length) {
-              this.nodeCache.keys((err, keys) => {
-                if (!err) {
-                  for (var key of keys) {
-                    this.geoJSONArray.push(this.nodeCache.get(key));
-                  }
-                }
-              });
-            }
+            } catch(err) {
+              console.log('Error:', err.message);
+            } finally {
+              checkForProcessingEnd();
+            } 
+          }).catch(err => {
+            console.log('Error:', err.message);
+            checkForProcessingEnd();
           });
         });
       }

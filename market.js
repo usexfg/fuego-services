@@ -20,6 +20,7 @@ export function getMarketInfo(req, resultCallback) {
   request.get(utils.geckoURL("simple/price", queryParams)).then(response => {
     resultCallback({success: true, data: response.data});
   }).catch(err => {
+    console.log(`getMarketInfo: ${err.message}`);
     throw err;
   });
 };
@@ -33,6 +34,7 @@ export function getMarketHistory(req, resultCallback) {
   request.get(utils.geckoURL("coins/conceal/market_chart", queryParams)).then(response => {
     resultCallback({success: true, data: response.data});
   }).catch(err => {
+    console.log(`getMarketHistory: ${err.message}`);
     throw err;
   });
 };

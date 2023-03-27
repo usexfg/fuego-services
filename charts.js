@@ -1,4 +1,4 @@
-import { ChartJSNodeCanvas } from "chartjs-node-canvas";
+import ChartJSNodeCanvas from "chartjs-node-canvas";
 import * as utils from "./utils.js";
 import smooth from "array-smooth";
 import moment from "moment";
@@ -23,6 +23,7 @@ function getCoinGeckoData(options, callback) {
   request.get(utils.geckoURL("coins/conceal/market_chart", queryParams)).then(response => {
     callback(response.data);
   }).catch(err => {
+    console.log(`getCoinGeckoData: ${err.message}`);
     throw err;
   });
 }
