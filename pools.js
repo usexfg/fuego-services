@@ -2,9 +2,13 @@
 //
 // Please see the included LICENSE file for more information.
 
-import path from "path";
-import axios from "axios";
+import path, { dirname } from "path";
+import { fileURLToPath } from 'url';
 import fs from "graceful-fs";
+import axios from "axios";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const request = axios.create({
   timeout: 2000, // 2 seconds
@@ -25,17 +29,21 @@ function shuffle(a) {
 }
 
 export function getPoolList(resultCallback) {
-  fs.readFile(path.join(path.dirname(require.main.filename), 'data', 'pools.json'), 'utf8', function (err, data) {
-    if (err) {
-      resultCallback({success: false, error: err});
-    } else {
-      resultCallback({success: true, data: shuffle(JSON.parse(data).ccx)});
-    }
-  });
+  try {
+    fs.readFile(path.join(__dirname, 'data', 'pools.json'), 'utf8', function (err, data) {
+      if (err) {
+        resultCallback({success: false, error: err});
+      } else {
+        resultCallback({success: true, data: shuffle(JSON.parse(data).ccx)});
+      }
+    });
+  } catch(err) {
+    resultCallback({success: false, error: err});
+  }
 };
 
 export function getPoolData(resultCallback) {
-  fs.readFile(path.join(path.dirname(require.main.filename), 'data', 'pools.json'), 'utf8', function (err, data) {
+  fs.readFile(path.join(__dirname, 'data', 'pools.json'), 'utf8', function (err, data) {
     if (err) {
       resultCallback({success: false, error: err});
     } else {
