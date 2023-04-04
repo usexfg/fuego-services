@@ -2,9 +2,10 @@
 {
    "exchanges":[
       {
-       "name": "Finexbox",
-       "url": "https://www.finexbox.com",
-       "paymentId": false
+       "name": "Exbitron",
+       "url": "https://exbitron.com",
+       "address":"",
+       "paymentId": true
       }
    ]
 }

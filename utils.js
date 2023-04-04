@@ -2,19 +2,23 @@
 //
 // Please see the included LICENSE file for more information.
 
-const shell = require("shelljs");
-const path = require("path");
-const fs = require("fs");
+import queryString from "query-string";
+import shell from "shelljs";
+import path from "path";
+import fs from "fs";
 
-module.exports = {
-  ensureUserDataDir: function () {
-    var userDataDir = process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Application Support" : process.env.HOME + "/.local/share");
-    userDataDir = path.join(userDataDir, "ccxServices");
+export function ensureUserDataDir() {
+  var userDataDir = process.env.APPDATA || (process.platform === "darwin" ? process.env.HOME + "/Library/Application Support" : process.env.HOME + "/.local/share");
+  userDataDir = path.join(userDataDir, "ccxServices");
 
-    if (!fs.existsSync(userDataDir)) {
-      shell.mkdir('-p', userDataDir);
-    }
-
-    return userDataDir;
+  if (!fs.existsSync(userDataDir)) {
+    shell.mkdir('-p', userDataDir);
   }
+
+  return userDataDir;
+};
+
+export function geckoURL(path, params) {
+  return `https://api.coingecko.com/api/v3/${path}?${queryString.stringify(params)}`;
+
 };

@@ -1,18 +1,18 @@
-const bodyParser = require("body-parser");
-const runProfiler = require('./profile.js')
-const exchanges = require("./exchanges.js");
-const express = require("express");
-const winston = require('winston');
-const expressWinston = require('express-winston');
-const config = require("./config.js").configOpts;
-const charts = require("./charts.js");
-const market = require("./market.js");
-const pools = require("./pools.js");
-const nodes = require("./nodes.js");
-const utils = require("./utils.js");
-const cors = require("cors");
-const path = require("path");
-const fs = require('graceful-fs');
+import bodyParser from "body-parser";
+import expressWinston from "express-winston";
+import * as runProfiler from "./profile.js";
+import * as exchanges from "./exchanges.js";
+import * as charts from "./charts.js";
+import * as market from "./market.js";
+import * as pools from "./pools.js";
+import { nodes } from "./nodes.js";
+import * as utils from "./utils.js";
+import express from "express";
+import winston from "winston";
+import config from "./config.js";
+import cors from "cors";
+import path from "path";
+import fs from "graceful-fs";
 
 // message base for winston logging
 const MESSAGE = Symbol.for('message');
@@ -77,127 +77,167 @@ function getChartOptions(req) {
 
 // get request for the list of all active nodes
 app.get("/charts/7daysPrice.png", (req, res) => {
-  console.log('call to /charts/7daysPrice.png was made', req);
-  charts.getPriceChart(getChartOptions(req), function (image) {
-    if (image) {
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': image.length
-      });
+  try {
+    console.log('call to /charts/7daysPrice.png was made', req);
+    charts.getPriceChart(getChartOptions(req), function (image) {
+      if (image) {
+        res.writeHead(200, {
+          'Content-Type': 'image/png',
+          'Content-Length': image.length
+        });
 
-      res.end(image);
-    } else {
-      res.status(500).send("Error executing the API: charts/7daysPrice.png");
-    }
-  });
+        res.end(image);
+      } else {
+        res.status(500).send("Error executing the API: charts/7daysPrice.png");
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/charts/price.png", (req, res) => {
-  console.log('call to /charts/price.png was made', req.query);
-  charts.getPriceChart(getChartOptions(req), function (image) {
-    if (image) {
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': image.length
-      });
+  try {
+    console.log('call to /charts/price.png was made', req.query);
+    charts.getPriceChart(getChartOptions(req), function (image) {
+      if (image) {
+        res.writeHead(200, {
+          'Content-Type': 'image/png',
+          'Content-Length': image.length
+        });
 
-      res.end(image);
-    } else {
-      res.status(500).send("Error executing the API: charts/price.png");
-    }
-  });
+        res.end(image);
+      } else {
+        res.status(500).send("Error executing the API: charts/price.png");
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/charts/volume.png", (req, res) => {
-  console.log('call to /charts/volume.png was made', req.query);
-  charts.getVolumeChart(getChartOptions(req), function (image) {
-    if (image) {
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': image.length
-      });
+  try {
+    console.log('call to /charts/volume.png was made', req.query);
+    charts.getVolumeChart(getChartOptions(req), function (image) {
+      if (image) {
+        res.writeHead(200, {
+          'Content-Type': 'image/png',
+          'Content-Length': image.length
+        });
 
-      res.end(image);
-    } else {
-      res.status(500).send("Error executing the API: charts/volume.png");
-    }
-  });
+        res.end(image);
+      } else {
+        res.status(500).send("Error executing the API: charts/volume.png");
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/charts/marketcap.png", (req, res) => {
-  lconsole.log('call to /charts/marketcap.png was made', req.query);
-  charts.getMarketcapChart(getChartOptions(req), function (image) {
-    if (image) {
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': image.length
-      });
+  try {
+    console.log('call to /charts/marketcap.png was made', req.query);
+    charts.getMarketcapChart(getChartOptions(req), function (image) {
+      if (image) {
+        res.writeHead(200, {
+          'Content-Type': 'image/png',
+          'Content-Length': image.length
+        });
 
-      res.end(image);
-    } else {
-      res.status(500).send("Error executing the API: charts/marketcap.png");
-    }
-  });
+        res.end(image);
+      } else {
+        res.status(500).send("Error executing the API: charts/marketcap.png");
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/nodes/geodata", (req, res) => {
-  console.log('call to /nodes/geodata was made', req.query);
-  res.json(nodesIntance.getGeoData(null));
+  try {
+    console.log('call to /nodes/geodata was made', req.query);
+    res.json(nodesIntance.getGeoData(null));
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/pools/list", (req, res) => {
-  console.log('call to /pools/list was made', req.query);
-  pools.getPoolList(function (response) {
-    if (response.success) {
-      res.json(response.data);
-    } else {
-      reportError(response.err.message, res);
-    }
-  });
+  try {
+    console.log('call to /pools/list was made', req.query);
+    pools.getPoolList(function (response) {
+      if (response.success) {
+        res.json(response.data);
+      } else {
+        reportError(response.err.message, res);
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/pools/data", (req, res) => {
-  console.log('call to /pools/data was made', req.query);
-  pools.getPoolData(function (response) {
-    if (response.success) {
-      res.json(response.data);
-    } else {
-      reportError(response.err.message, res);
-    }
-  });
+  try {
+    console.log('call to /pools/data was made', req.query);
+    pools.getPoolData(function (response) {
+      if (response.success) {
+        res.json(response.data);
+      } else {
+        reportError(response.err.message, res);
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/exchanges/list", (req, res) => {
-  console.log('call to /exchanges/list was made', req.query);
-  exchanges.getExchangesList(req, function (response) {
-    if (response.success) {
-      res.json(response.data);
-    } else {
-      reportError(response.err.message, res);
-    }
-  });
+  try {
+    console.log('call to /exchanges/list was made', req.query);
+    exchanges.getExchangesList(req, function (response) {
+      if (response.success) {
+        res.json(response.data);
+      } else {
+        reportError(response.err.message, res);
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/market/info", (req, res) => {
-  console.log('call to //market/info was made', req.query);
-  market.getMarketInfo(req, function (response) {
-    if (response.success) {
-      res.json(response.data);
-    } else {
-      reportError(response.err.message, res);
-    }
-  });
+  try {
+    console.log('call to //market/info was made', req.query);
+    market.getMarketInfo(req, function (response) {
+      if (response.success) {
+        res.json(response.data);
+      } else {
+        reportError(response.err.message, res);
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/market/history", (req, res) => {
-  console.log('call to /market/history was made', req.query);
-  market.getMarketHistory(req, function (response) {
-    if (response.success) {
-      res.json(response.data);
-    } else {
-      reportError(response.err.message, res);
-    }
-  });
+  try {
+    console.log('call to /market/history was made', req.query);
+    market.getMarketHistory(req, function (response) {
+      if (response.success) {
+        res.json(response.data);
+      } else {
+        reportError(response.err.message, res);
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get('/system/profile', async (req, res) => {
@@ -205,8 +245,8 @@ app.get('/system/profile', async (req, res) => {
     let profile = await runProfiler(req.query.duration ? parseInt(req.query.duration) : 30);
     res.attachment(`profile_${Date.now()}.cpuprofile`);
     res.send(profile);
-  } catch (er) {
-    res.status(500).send(er.message);
+  } catch (err) {
+    res.status(500).send(err.message);
   }
 })
 

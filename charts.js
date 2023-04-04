@@ -1,8 +1,15 @@
-const { CanvasRenderService } = require('chartjs-node-canvas');
-const queryString = require('query-string');
-const request = require("request");
-const smooth = require('array-smooth');
-const moment = require("moment");
+import { ChartJSNodeCanvas } from "chartjs-node-canvas";
+import * as utils from "./utils.js";
+import smooth from "array-smooth";
+import moment from "moment";
+import axios from "axios";
+
+const request = axios.create({
+  timeout: 10000, // 10 seconds
+  headers:{
+    'User-Agent': 'Conceal Services'
+  }
+});
 
 function getCoinGeckoData(options, callback) {
   var queryParams = {
@@ -10,14 +17,11 @@ function getCoinGeckoData(options, callback) {
     days: options.days
   };
 
-  var packetData = {
-    uri: `https://api.coingecko.com/api/v3/coins/fango/market_chart?${queryString.stringify(queryParams)}`,
-    method: "GET",
-    json: true
-  };
-
-  request(packetData, function (error, response, body) {
-    callback(body);
+  request.get(utils.geckoURL("coins/fango/market_chart", queryParams)).then(response => {
+    callback(response.data);
+  }).catch(err => {
+    console.log(`getCoinGeckoData: ${err.message}`);
+    callback(null);
   });
 }
 
@@ -53,14 +57,16 @@ function getCustomChart(options, chartData, resultCallback) {
         animation: false,
         responsive: true,
         maintainAspectRatio: false,
-        legend: {
-          display: false,
-          labels: {
-            display: false
+        plugins: {
+          legend: {
+            display: false,
+            labels: {
+              display: false
+            }
           }
         },
         scales: {
-          yAxes: [{
+          yAxes: {
             ticks: {
               maxTicksLimit: 5,
               fontSize: 10,
@@ -68,21 +74,21 @@ function getCustomChart(options, chartData, resultCallback) {
                 return options.priceSymbol + value.toFixed(options.priceDecimals);
               }
             },
-            gridLines: {
-              color: 'rgba(255,255,255,.08)'
+            grid: {
+              display: false
             }
-          }],
-          xAxes: [{
+          },
+          xAxes: {
             ticks: {
               autoSkip: true,
               maxTicksLimit: options.xPoints,
               maxRotation: 0,
               minRotation: 0
             },
-            gridLines: {
-              color: 'rgba(255, 255, 255, .08)'
-            },
-          }]
+            grid: {
+              display: false
+            }
+          }
         },
         hover: {
           mode: 'nearest',
@@ -92,51 +98,43 @@ function getCustomChart(options, chartData, resultCallback) {
     };
   }
 
-  const chartCallback = (Chart) => {
-    // Global config example: https://www.chartjs.org/docs/latest/configuration/
-    Chart.defaults.global.elements.rectangle.borderWidth = 2;
-    // Global plugin example: https://www.chartjs.org/docs/latest/developers/plugins.html
-    Chart.plugins.register({
-      // plugin implementation
-    });
-    // New chart type example: https://www.chartjs.org/docs/latest/developers/charts.html
-    Chart.controllers.MyType = Chart.DatasetController.extend({
-      // chart implementation
-    });
-  };
 
   (async () => {
-    const canvasRenderService = new CanvasRenderService(options.width, options.height, chartCallback);
+    const canvasRenderService = new ChartJSNodeCanvas({
+      width: options.width,
+      height: options.height,
+    });
+
     resultCallback(await canvasRenderService.renderToBuffer(makeConfiguration(chartData)));
   })();
 }
 
-module.exports = {
-  getPriceChart: function (options, resultCallback) {
-    getCoinGeckoData(options, function (data) {
-      if (data) {
-        getCustomChart(options, data.prices, resultCallback);
-      } else {
-        resultCallback(null);
-      }
-    });
-  },
-  getVolumeChart: function (options, resultCallback) {
-    getCoinGeckoData(options, function (data) {
-      if (data) {
-        getCustomChart(options, data.total_volumes, resultCallback);
-      } else {
-        resultCallback(null);
-      }
-    });
-  },
-  getMarketcapChart: function (options, resultCallback) {
-    getCoinGeckoData(options, function (data) {
-      if (data) {
-        getCustomChart(options, data.market_caps, resultCallback);
-      } else {
-        resultCallback(null);
-      }
-    });
-  }
+export function getPriceChart(options, resultCallback) {
+  getCoinGeckoData(options, function (data) {
+    if (data) {
+      getCustomChart(options, data.prices, resultCallback);
+    } else {
+      resultCallback(null);
+    }
+  });
+};
+
+export function getVolumeChart(options, resultCallback) {
+  getCoinGeckoData(options, function (data) {
+    if (data) {
+      getCustomChart(options, data.total_volumes, resultCallback);
+    } else {
+      resultCallback(null);
+    }
+  });
+};
+
+export function getMarketcapChart(options, resultCallback) {
+  getCoinGeckoData(options, function (data) {
+    if (data) {
+      getCustomChart(options, data.market_caps, resultCallback);
+    } else {
+      resultCallback(null);
+    }
+  });
 };
