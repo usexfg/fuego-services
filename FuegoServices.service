@@ -1,5 +1,5 @@
 [Unit]
-Description=FangoServices
+Description=FuegoServices
 
 [Service]
 Type=simple
