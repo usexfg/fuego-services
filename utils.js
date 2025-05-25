@@ -22,3 +22,11 @@ export function geckoURL(path, params) {
   return `https://api.coingecko.com/api/v3/${path}?${queryString.stringify(params)}`;
 
 };
+
+export function coinpaprikaURL(path, params) {
+  const base = `https://api.coinpaprika.com/v1/${path}`;
+  if (params && Object.keys(params).length > 0) {
+    return `${base}?${queryString.stringify(params)}`;
+  }
+  return base;
+}

@@ -64,3 +64,4 @@ typings/
 /bin
 /config.js
 .scannerwork
+.DS_Store

@@ -8,33 +8,33 @@ const request = axios.create({
   }
 });
 
-export function getMarketInfo(req, resultCallback) {
-  var queryParams = {
-    ids: 'Fango',
-    vs_currencies: req.query.vsCurrencies || 'USD',
-    include_market_cap: true,
-    include_24hr_vol: true,
-    include_24hr_change: true
-  };
+// Fuego (XFG) Coinpaprika ID: xfg-fuego
+const COINPAPRIKA_ID = 'xfg-fuego';
 
-  request.get(utils.geckoURL("simple/price", queryParams)).then(response => {
+export function getMarketInfo(req, resultCallback) {
+  // Coinpaprika: /tickers/{coin_id}
+  request.get(utils.coinpaprikaURL(`tickers/${COINPAPRIKA_ID}`)).then(response => {
     resultCallback({success: true, data: response.data});
   }).catch(err => {
     console.log(`getMarketInfo: ${err.message}`);
-    throw err;
+    resultCallback({success: false, err});
   });
 };
 
 export function getMarketHistory(req, resultCallback) {
-  var queryParams = {
-    vs_currency: req.query.vsCurrency || 'USD',
-    days: req.query.days || 7
+  // Coinpaprika: /coins/{coin_id}/ohlcv/historical
+  const params = {
+    start: req.query.start || undefined, // ISO 8601 date, e.g. '2023-01-01'
+    end: req.query.end || undefined,     // ISO 8601 date, e.g. '2023-01-31'
+    limit: req.query.days || 7           // Number of days
   };
+  // Remove undefined params
+  Object.keys(params).forEach(key => params[key] === undefined && delete params[key]);
 
-  request.get(utils.geckoURL("coins/fango/market_chart", queryParams)).then(response => {
+  request.get(utils.coinpaprikaURL(`coins/${COINPAPRIKA_ID}/ohlcv/historical`, params)).then(response => {
     resultCallback({success: true, data: response.data});
   }).catch(err => {
     console.log(`getMarketHistory: ${err.message}`);
-    throw err;
+    resultCallback({success: false, err});
   });
 };

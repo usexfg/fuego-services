@@ -7,25 +7,30 @@ import axios from "axios";
 const request = axios.create({
   timeout: 10000, // 10 seconds
   headers:{
-    'User-Agent': 'Conceal Services'
+    'User-Agent': 'Fuego Services'
   }
 });
 
-function getCoinGeckoData(options, callback) {
-  var queryParams = {
-    vs_currency: options.vsCurrency,
-    days: options.days
-  };
+const COINPAPRIKA_ID = 'xfg-fuego';
 
-  request.get(utils.geckoURL("coins/fango/market_chart", queryParams)).then(response => {
+function getCoinpaprikaData(options, callback) {
+  // Coinpaprika: /coins/{coin_id}/ohlcv/historical
+  const params = {
+    start: options.start || undefined, // ISO 8601 date
+    end: options.end || undefined,     // ISO 8601 date
+    limit: options.days || 7
+  };
+  Object.keys(params).forEach(key => params[key] === undefined && delete params[key]);
+
+  request.get(utils.coinpaprikaURL(`coins/${COINPAPRIKA_ID}/ohlcv/historical`, params)).then(response => {
     callback(response.data);
   }).catch(err => {
-    console.log(`getCoinGeckoData: ${err.message}`);
+    console.log(`getCoinpaprikaData: ${err.message}`);
     callback(null);
   });
 }
 
-function getCustomChart(options, chartData, resultCallback) {
+function getCustomChart(options, chartData, valueKey, resultCallback) {
   function makeConfiguration(data) {
     var timeLabels = [];
     var dataPoints = [];
@@ -33,7 +38,7 @@ function getCustomChart(options, chartData, resultCallback) {
     var durationAsMS = moment.duration(options.days / dataLength, 'd').asMilliseconds();
 
     data.forEach(function (value) {
-      dataPoints.push(value[1]);
+      dataPoints.push(value[valueKey]);
     });
 
     for (let i = dataLength - 1; i >= 0; i--) {
@@ -98,7 +103,6 @@ function getCustomChart(options, chartData, resultCallback) {
     };
   }
 
-
   (async () => {
     const canvasRenderService = new ChartJSNodeCanvas({
       width: options.width,
@@ -110,9 +114,9 @@ function getCustomChart(options, chartData, resultCallback) {
 }
 
 export function getPriceChart(options, resultCallback) {
-  getCoinGeckoData(options, function (data) {
+  getCoinpaprikaData(options, function (data) {
     if (data) {
-      getCustomChart(options, data.prices, resultCallback);
+      getCustomChart(options, data, 'close', resultCallback);
     } else {
       resultCallback(null);
     }
@@ -120,9 +124,9 @@ export function getPriceChart(options, resultCallback) {
 };
 
 export function getVolumeChart(options, resultCallback) {
-  getCoinGeckoData(options, function (data) {
+  getCoinpaprikaData(options, function (data) {
     if (data) {
-      getCustomChart(options, data.total_volumes, resultCallback);
+      getCustomChart(options, data, 'volume', resultCallback);
     } else {
       resultCallback(null);
     }
@@ -130,9 +134,9 @@ export function getVolumeChart(options, resultCallback) {
 };
 
 export function getMarketcapChart(options, resultCallback) {
-  getCoinGeckoData(options, function (data) {
+  getCoinpaprikaData(options, function (data) {
     if (data) {
-      getCustomChart(options, data.market_caps, resultCallback);
+      getCustomChart(options, data, 'market_cap', resultCallback);
     } else {
       resultCallback(null);
     }
