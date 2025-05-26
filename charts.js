@@ -23,6 +23,7 @@ function getCoinpaprikaData(options, callback) {
   Object.keys(params).forEach(key => params[key] === undefined && delete params[key]);
 
   request.get(utils.coinpaprikaURL(`coins/${COINPAPRIKA_ID}/ohlcv/historical`, params)).then(response => {
+    console.log('Coinpaprika data:', response.data);
     callback(response.data);
   }).catch(err => {
     console.log(`getCoinpaprikaData: ${err.message}`);
@@ -116,6 +117,7 @@ function getCustomChart(options, chartData, valueKey, resultCallback) {
 export function getPriceChart(options, resultCallback) {
   getCoinpaprikaData(options, function (data) {
     if (data) {
+      console.log('Chart data for price:', data);
       getCustomChart(options, data, 'close', resultCallback);
     } else {
       resultCallback(null);
