@@ -1,11 +1,12 @@
 {
-  "name": "fango-services",
+  "name": "fuego-services",
   "version": "1.0.0",
-  "description": "Fango Misc Services",
+  "description": "Fuego Misc Services",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Taegus",
   "license": "GPL-3.0",
@@ -13,10 +14,12 @@
     "array-smooth": "^1.0.0",
     "axios": "^1.3.4",
     "body-parser": "^1.20.2",
+    "canvas": "^3.1.0",
     "chart.js": "^3.5.1",
     "chartjs-node-canvas": "^4.1.6",
     "command-line-args": "^5.2.1",
     "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
     "express": "^4.18.2",
     "express-winston": "^4.2.0",
     "geoip-lite": "^1.4.7",

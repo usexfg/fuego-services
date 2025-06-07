@@ -2,9 +2,9 @@
 
 Currently there are 3 chart API calls supported that return PNG images as result. The calls have the following endpoints:
 
-* /charts/price.png -> Price history for Fango coin
-* /charts/volume.png -> Volume history for Fango coin
-* /charts/marketcap.png -> Marketcap history for Fango coin
+* /charts/price.png -> Price history for Fuego coin
+* /charts/volume.png -> Volume history for Fuego coin
+* /charts/marketcap.png -> Marketcap history for Fuego coin
 
 The type chart you get back depends on the parameters you pass in the URL.
 
@@ -141,4 +141,45 @@ market/history?vsCurrency=usd
 ```
 market/history?days=30
 ```
+
+## Getting Started
+
+To set up and run the API locally:
+
+```bash
+# Clone the repository
+ git clone <repository-url>
+ cd fuego-api
+
+# Install dependencies
+ npm install
+
+# Copy the sample config
+ cp config.json.sample config.json
+
+# Start the server
+ npm start
+```
+
+To build and run using Docker:
+
+```bash
+ docker build -t fuego-api .
+ docker run -p 3000:3000 -e PORT=3000 fuego-api
+```
+
+## Setting Up with Fuego Daemon
+
+To integrate the API with the Fuego daemon for blockchain data:
+
+1. **Install and Run Fuego Daemon**: Ensure the Fuego daemon is installed and running with RPC enabled.
+
+2. **Configure RPC Settings**: Update the `fuegoDaemonConfig` in `index.js` with the correct host, port, and authentication details if required.
+
+3. **Available Endpoints**:
+   - `/chain/height`: Fetches the current chain height.
+   - `/chain/supply`: Fetches the total supply of the chain.
+   - `/chain/difficulty`: Fetches the current difficulty of the chain.
+
+4. **Start the API**: Run the API server using `npm start` or Docker as described above.
 

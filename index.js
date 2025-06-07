@@ -13,6 +13,7 @@ import config from "./config.js";
 import cors from "cors";
 import path from "path";
 import fs from "graceful-fs";
+import axios from 'axios';
 
 // message base for winston logging
 const MESSAGE = Symbol.for('message');
@@ -31,6 +32,7 @@ var app = express(); // create express app
 // use the json parser for body
 app.use(bodyParser.json());
 app.use(cors());
+app.set('trust proxy', true);
 
 app.use(expressWinston.logger({
   transports: [
@@ -53,8 +55,32 @@ app.use(expressWinston.errorLogger({
 }));
 
 // start listener
-app.listen(config.server.port, () => {
-  console.log("Server running on port " + config.server.port);
+const port = process.env.PORT || config.server.port;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+// root welcome route
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Fuego API is up and running',
+    endpoints: [
+      '/ping',
+      '/charts/price.png',
+      '/charts/volume.png',
+      '/charts/marketcap.png',
+      '/nodes/geodata',
+      '/pools/list',
+      '/pools/data',
+      '/exchanges/list',
+      '/market/info',
+      '/market/history',
+      '/system/profile',
+      '/chain/height',
+      '/chain/supply',
+      '/chain/difficulty'
+    ]
+  });
 });
 
 function reportError(message, res) {
@@ -249,6 +275,71 @@ app.get('/system/profile', async (req, res) => {
     res.status(500).send(err.message);
   }
 })
+
+// health check endpoint
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
+
+// Fuego daemon RPC configuration
+const fuegoDaemonConfig = {
+  host: 'localhost',
+  port: 18081, // default RPC port
+  username: '', // if authentication is required
+  password: ''  // if authentication is required
+};
+
+// Function to call Fuego daemon RPC
+async function callFuegoRPC(method, params = {}) {
+  const url = `http://${fuegoDaemonConfig.host}:${fuegoDaemonConfig.port}/json_rpc`;
+  const data = {
+    jsonrpc: '2.0',
+    id: '0',
+    method,
+    params
+  };
+  const auth = fuegoDaemonConfig.username ? {
+    username: fuegoDaemonConfig.username,
+    password: fuegoDaemonConfig.password
+  } : undefined;
+  try {
+    const response = await axios.post(url, data, { auth });
+    return response.data.result;
+  } catch (error) {
+    console.error(`Error calling Fuego RPC method ${method}:`, error.message);
+    throw error;
+  }
+}
+
+// Endpoint to get chain height
+app.get('/chain/height', async (req, res) => {
+  try {
+    const result = await callFuegoRPC('get_block_count');
+    res.json({ height: result.count });
+  } catch (error) {
+    res.status(500).send('Error fetching chain height');
+  }
+});
+
+// Endpoint to get chain supply
+app.get('/chain/supply', async (req, res) => {
+  try {
+    const result = await callFuegoRPC('get_coinbase_tx_sum', { height: 0, count: 1 });
+    res.json({ supply: result.emission_amount });
+  } catch (error) {
+    res.status(500).send('Error fetching chain supply');
+  }
+});
+
+// Endpoint to get chain difficulty
+app.get('/chain/difficulty', async (req, res) => {
+  try {
+    const result = await callFuegoRPC('get_last_block_header');
+    res.json({ difficulty: result.block_header.difficulty });
+  } catch (error) {
+    res.status(500).send('Error fetching chain difficulty');
+  }
+});
 
 // handle any application errors
 app.use(function (err, req, res, next) {

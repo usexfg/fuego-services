@@ -3,6 +3,8 @@ import * as utils from "./utils.js";
 import smooth from "array-smooth";
 import moment from "moment";
 import axios from "axios";
+import fs from 'fs';
+import csvParser from 'csv-parser';
 
 const request = axios.create({
   timeout: 10000, // 10 seconds
@@ -12,39 +14,45 @@ const request = axios.create({
 });
 
 const COINPAPRIKA_ID = 'xfg-fuego';
+const fuegoUrl = "https://graphsv2.coinpaprika.com/currency/data/xfg-fango/30d/?quote=usd";
 
 function getCoinpaprikaData(options, callback) {
-  // Coinpaprika: /coins/{coin_id}/ohlcv/historical
-  const params = {
-    start: options.start || undefined, // ISO 8601 date
-    end: options.end || undefined,     // ISO 8601 date
-    limit: options.days || 7
-  };
-  Object.keys(params).forEach(key => params[key] === undefined && delete params[key]);
-
-  request.get(utils.coinpaprikaURL(`coins/${COINPAPRIKA_ID}/ohlcv/historical`, params)).then(response => {
-    console.log('Coinpaprika data:', response.data);
-    callback(response.data);
-  }).catch(err => {
-    console.log(`getCoinpaprikaData: ${err.message}`);
-    callback(null);
-  });
+  if (options.days > 30) {
+    // Use local CSV data for requests longer than 30 days
+    const priceData = [];
+    fs.createReadStream('data/CoinPaprika_XFG_price_all_2025-06-05.csv')
+      .pipe(csvParser())
+      .on('data', (row) => {
+        priceData.push({
+          time: new Date(row.DateTime).getTime(),
+          price: parseFloat(row.Price)
+        });
+      })
+      .on('end', () => {
+        console.log('CSV file successfully processed');
+        callback(priceData);
+      });
+  } else {
+    // Use the provided URL for fetching XFG price data
+    request.get(fuegoUrl).then(response => {
+      console.log('Coinpaprika data:', response.data);
+      // Correctly access the nested data structure
+      const priceData = response.data[0].price.map(item => ({
+        time: item[0],
+        price: item[1]
+      }));
+      callback(priceData);
+    }).catch(err => {
+      console.log(`getCoinpaprikaData: ${err.message}`);
+      callback(null);
+    });
+  }
 }
 
 function getCustomChart(options, chartData, valueKey, resultCallback) {
   function makeConfiguration(data) {
-    var timeLabels = [];
-    var dataPoints = [];
-    var dataLength = data.length;
-    var durationAsMS = moment.duration(options.days / dataLength, 'd').asMilliseconds();
-
-    data.forEach(function (value) {
-      dataPoints.push(value[valueKey]);
-    });
-
-    for (let i = dataLength - 1; i >= 0; i--) {
-      timeLabels.push(moment().subtract(durationAsMS * (i + 1), 'ms').format(options.dateFormat));
-    }
+    var timeLabels = data.map(item => moment(item.time).format(options.dateFormat));
+    var dataPoints = data.map(item => item.price);
 
     return {
       type: 'line',
